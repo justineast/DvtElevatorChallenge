@@ -9,13 +9,11 @@ namespace DvtElevatorChallenge.Bll
     {
         private readonly IElevatorHelper _elevatorHelper;
         private readonly IPassengerHelper _passengerHelper;
-        private Dictionary<string, int> _buttonsPressed;
 
         public ElevatorControl(IElevatorHelper elevatorHelper, IPassengerHelper passengerHelper)
         {
             _elevatorHelper = elevatorHelper ?? new ElevatorHelper();
             _passengerHelper = passengerHelper ?? new PassengerHelper();
-            _buttonsPressed = new Dictionary<string, int>();
         }
 
         public string SelectFloor(int floorSelected, int topFloor, int maxPassengers, List<Passenger> numberOfPassengers)
@@ -27,7 +25,9 @@ namespace DvtElevatorChallenge.Bll
                 return invalidResponse;
             }
 
-            if (!_buttonsPressed.ContainsValue(floorSelected))
+            var buttonsPressed = new Dictionary<string, int>();
+
+            if (!buttonsPressed.ContainsValue(floorSelected))
             {
                 return invalidResponse;
             }
@@ -38,7 +38,7 @@ namespace DvtElevatorChallenge.Bll
             }
             
             var elevator = new Elevator(maxPassengers, 10, numberOfPassengers);
-            _elevatorHelper.MoveElevator(elevator, floorSelected, _buttonsPressed);
+            _elevatorHelper.MoveElevator(elevator, floorSelected, buttonsPressed);
 
             return string.Empty;
         }
