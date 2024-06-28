@@ -8,39 +8,24 @@ namespace DvtElevatorChallenge.Bll
     public class ElevatorControl : IElevatorControl
     {
         private readonly IElevatorHelper _elevatorHelper;
-        private readonly IPassengerHelper _passengerHelper;
 
-        public ElevatorControl(IElevatorHelper elevatorHelper, IPassengerHelper passengerHelper)
+        public ElevatorControl(IElevatorHelper elevatorHelper)
         {
-            _elevatorHelper = elevatorHelper ?? new ElevatorHelper();
-            _passengerHelper = passengerHelper ?? new PassengerHelper();
+            _elevatorHelper = elevatorHelper;
         }
 
-        public string SelectFloor(int floorSelected, int topFloor, int maxPassengers, List<Passenger> numberOfPassengers)
+        public List<string> SelectFloor(int floorSelected, List<Passenger> passengers)
         {
-            var invalidResponse = $"An invalid floor has been selected, please try again";
+            var response = new List<string>();
 
-            if (!_elevatorHelper.ValidateSelectedFloor(floorSelected, topFloor))
+            if (!_elevatorHelper.ValidateSelectedFloor(floorSelected))
             {
-                return invalidResponse;
-            }
-
-            var buttonsPressed = new Dictionary<string, int>();
-
-            if (!buttonsPressed.ContainsValue(floorSelected))
-            {
-                return invalidResponse;
+                response.Add(Constants.InvalidError);
             }
             
-            if (!_passengerHelper.ValidateNumberOfPassengers(numberOfPassengers.Count, maxPassengers))
-            {
-                return $"The elevator cannot exceed {maxPassengers} passengers.";
-            }
-            
-            var elevator = new Elevator(maxPassengers, 10, numberOfPassengers);
-            _elevatorHelper.MoveElevator(elevator, floorSelected, buttonsPressed);
+            _elevatorHelper.MoveElevator(floorSelected, passengers);
 
-            return string.Empty;
+            return response;
         }
     }
 }

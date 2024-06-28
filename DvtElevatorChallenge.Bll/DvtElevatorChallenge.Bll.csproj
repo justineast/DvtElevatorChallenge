@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DvtElevatorChallenge.Data\DvtElevatorChallenge.Data.csproj" />
     <ProjectReference Include="..\DvtElevatorChallenge.Utility\DvtElevatorChallenge.Utility.csproj" />
   </ItemGroup>
 

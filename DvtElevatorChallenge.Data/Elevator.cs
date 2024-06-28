@@ -8,6 +8,9 @@
             MaximumPassengerWeight = MaximumPassengers * 100;
             Passengers = passengers ?? new List<Passenger>();
             TopFloor = topFloor;
+            CurrentFloor = 0;
+            PreviousFloor = 0;
+            NextFloor = 0;
         }
 
         public int Id { get; set; }
