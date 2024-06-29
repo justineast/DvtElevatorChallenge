@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DvtElevatorChallenge.Data;
 using DvtElevatorChallenge.Utility.Interfaces;
 
 namespace DvtElevatorChallenge.Utility
@@ -11,12 +12,31 @@ namespace DvtElevatorChallenge.Utility
     {
         public bool ValidateNumberOfPassengers(int numberOfPassengers, int maximumPassengers)
         {
-            return numberOfPassengers > maximumPassengers;
+            return numberOfPassengers < maximumPassengers;
         }
 
-        //private string CalculateNumberOfPassengers()
-        //{
-            //TODO: Calculate whether the weight and number of people in the lift has changed
-        //}
+        public List<Passenger> AddPassengers(Elevator elevator, List<Passenger> passengersToAdd)
+        {
+            var passengers = new List<Passenger>(passengersToAdd);
+
+            foreach (var passenger in passengers.Where(passenger => elevator.CurrentFloor == passenger.CurrentFloor && elevator.Passengers.Count < elevator.MaximumPassengers))
+            {
+                elevator.Passengers.Add(passenger);
+            }
+
+            return elevator.Passengers;
+        }
+
+        public List<Passenger> RemovePassengers(Elevator elevator)
+        {
+            var passengers = new List<Passenger>(elevator.Passengers);
+
+            foreach (var passenger in passengers.Where(passenger => elevator.CurrentFloor == passenger.SelectedFloor))
+            {
+                elevator.Passengers.Remove(passenger);
+            }
+
+            return elevator.Passengers;
+        }
     }
 }

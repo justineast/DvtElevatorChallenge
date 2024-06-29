@@ -2,45 +2,34 @@
 using DvtElevatorChallenge.Data;
 using DvtElevatorChallenge.Utility;
 using DvtElevatorChallenge.Utility.Interfaces;
+using Serilog;
+using Serilog.Events;
 
 namespace DvtElevatorChallenge.Bll
 {
     public class ElevatorControl : IElevatorControl
     {
         private readonly IElevatorHelper _elevatorHelper;
-        private readonly IPassengerHelper _passengerHelper;
-        private Dictionary<string, int> _buttonsPressed;
 
-        public ElevatorControl(IElevatorHelper elevatorHelper, IPassengerHelper passengerHelper)
+        public ElevatorControl(IElevatorHelper elevatorHelper)
         {
-            _elevatorHelper = elevatorHelper ?? new ElevatorHelper();
-            _passengerHelper = passengerHelper ?? new PassengerHelper();
-            _buttonsPressed = new Dictionary<string, int>();
+            _elevatorHelper = elevatorHelper;
         }
 
-        public string SelectFloor(int floorSelected, int topFloor, int maxPassengers, List<Passenger> numberOfPassengers)
+        public Elevator SelectFloor(int floorSelected, List<Passenger> passengers)
         {
-            var invalidResponse = $"An invalid floor has been selected, please try again";
-
-            if (!_elevatorHelper.ValidateSelectedFloor(floorSelected, topFloor))
+            try
             {
-                return invalidResponse;
+                if (!_elevatorHelper.IsSelectedFloorOutOfRange(floorSelected))
+                    return _elevatorHelper.MoveElevator(floorSelected, passengers);
+                
+                throw new ArgumentOutOfRangeException(Constants.InvalidError);
             }
-
-            if (!_buttonsPressed.ContainsValue(floorSelected))
+            catch (ArgumentOutOfRangeException aore)
             {
-                return invalidResponse;
+                Log.Write(LogEventLevel.Error, aore, Constants.InvalidError);
+                return new Elevator(0, 0, new List<Passenger>());
             }
-            
-            if (!_passengerHelper.ValidateNumberOfPassengers(numberOfPassengers.Count, maxPassengers))
-            {
-                return $"The elevator cannot exceed {maxPassengers} passengers.";
-            }
-            
-            var elevator = new Elevator(maxPassengers, 10, numberOfPassengers);
-            _elevatorHelper.MoveElevator(elevator, floorSelected, _buttonsPressed);
-
-            return string.Empty;
         }
     }
 }
