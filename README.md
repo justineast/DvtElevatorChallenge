@@ -38,9 +38,6 @@ dotnet restore
 dotnet build
 \`\`\`
  
-## Usage
- 
-Explain how to use your application. Provide examples or screenshots if helpful.
  
 \`\`\`bash
 # Usage
