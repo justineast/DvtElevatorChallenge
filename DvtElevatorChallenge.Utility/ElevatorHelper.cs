@@ -1,6 +1,7 @@
 ﻿using DvtElevatorChallenge.Data;
 using DvtElevatorChallenge.Utility.Interfaces;
-using System.Collections.Generic;
+using Serilog;
+using Serilog.Events;
 
 namespace DvtElevatorChallenge.Utility
 {
@@ -12,7 +13,7 @@ namespace DvtElevatorChallenge.Utility
         private readonly int _topFloor;
         private Elevator _elevator;
 
-        public ElevatorHelper(IPassengerHelper? passengerHelper, List<int>? buttonsPressed, Elevator? elevator, int maxPassengers, int topFloor)
+        public ElevatorHelper(List<int>? buttonsPressed = null, int maxPassengers = 10, int topFloor = 10, Elevator? elevator = null, IPassengerHelper? passengerHelper = null)
         {
             _passengerHelper = passengerHelper ?? new PassengerHelper();
             _buttonsPressed = buttonsPressed ?? new List<int>();
@@ -21,99 +22,88 @@ namespace DvtElevatorChallenge.Utility
             _elevator = elevator ?? new Elevator(_maxPassengers, _topFloor, new List<Passenger>());
         }
 
-        public bool ValidateSelectedFloor(int floorSelected)
+        public bool IsSelectedFloorOutOfRange(int floorSelected)
         {
-            return !(floorSelected < 0 || floorSelected > _topFloor);
+            return floorSelected < 0 || floorSelected > _topFloor;
         }
 
-        public string MoveElevator(int floorSelected, List<Passenger> passengers)
+        public Elevator MoveElevator(int floorSelected, List<Passenger> passengers)
         {
-            var response = string.Empty;
-
-            _elevator.NextFloor = floorSelected;
-            _elevator.Passengers = passengers;
-
-            if (!_passengerHelper.ValidateNumberOfPassengers(passengers.Count, _maxPassengers))
+            try
             {
-                return $"The elevator cannot exceed {_maxPassengers} passengers.";
+                if (floorSelected > _topFloor)
+                {
+                    Log.Write(LogEventLevel.Error, new ArgumentOutOfRangeException(string.Format(Constants.TopFloorReachedError, _topFloor)), "Failure");
+                    return _elevator;
+                }
+
+                _elevator.DestinationFloor = floorSelected;
+                _elevator.Passengers = passengers;
+
+                if (!_passengerHelper.ValidateNumberOfPassengers(passengers.Count, _maxPassengers))
+                {
+                    Log.Write(LogEventLevel.Error,
+                        new ArgumentOutOfRangeException(string.Format(Constants.MaxPassengersReachedError,
+                            _maxPassengers)), "Failure");
+                    return _elevator;
+                }
+
+                _buttonsPressed.Add(floorSelected);
+                _buttonsPressed = _buttonsPressed.Distinct().OrderBy(bp => bp).ToList();
+
+                KeepMovingUntilAllButtonPressesComplete(floorSelected, passengers);
+            }
+            catch (Exception ex)
+            {
+                Log.Write(LogEventLevel.Error, ex, ex.Message);
             }
 
-            _buttonsPressed.Add(floorSelected);
-            _buttonsPressed.Sort();
-            _buttonsPressed = _buttonsPressed.ToHashSet().ToList();
-
-            CalculateMovement(floorSelected);
-            Move(floorSelected, passengers);
-
-            return response;
-        }
-
-        private void CalculateMovement(int floorSelected)
-        {
-            if (_elevator.CurrentFloor == 0 || _elevator.CurrentFloor < floorSelected || _buttonsPressed.Last() < floorSelected)
-            {
-                MoveUp(floorSelected);
-            }
-
-            if (_elevator.CurrentFloor == _elevator.TopFloor || _elevator.CurrentFloor > floorSelected || _buttonsPressed.Last() > floorSelected)
-            {
-                MoveDown(floorSelected);
-            }
-
-            if (floorSelected == _elevator.CurrentFloor)
-            {
-                _elevator.Status = Enums.Status.Stopped;
-            }
+            return _elevator;
         }
 
         private void Move(int floorSelected, List<Passenger> passengers)
         {
-            while (true)
+            var destination = _buttonsPressed.First();
+            
+            if (destination < floorSelected)
             {
-                switch (_elevator?.Status)
-                {
-                    case Enums.Status.MovingDown: case Enums.Status.MovingUp:
-                        KeepMovingUntil();
-                        break;
-
-                    case Enums.Status.Stopped:
-                        if (floorSelected > _elevator.CurrentFloor)
-                        {
-                            _elevator.Status = Enums.Status.MovingUp;
-                        }
-
-                        if (floorSelected <= _elevator.CurrentFloor)
-                        {
-                            _elevator.Status = Enums.Status.MovingDown;
-                        }
-
-                        continue;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                break;
+                MoveUp(floorSelected);
             }
-        }
+            
+            if (destination > floorSelected)
+            {
+                MoveDown(floorSelected);
+            }
 
-        private void KeepMovingUntil()
+            _passengerHelper.AddPassengers(_elevator, passengers);
+            _passengerHelper.RemovePassengers(_elevator);
+
+            _buttonsPressed.RemoveAt(0);
+            _elevator.CurrentFloor = destination;
+        }
+        
+        private void KeepMovingUntilAllButtonPressesComplete(int floorSelected, List<Passenger> passengers)
         {
             while (_buttonsPressed.Count > 0)
             {
+                if (IsSelectedFloorOutOfRange(_elevator.CurrentFloor))
+                {
+                    break;
+                }
+
                 _elevator.CurrentFloor = _buttonsPressed.First();
 
                 if (_buttonsPressed.Count > 1)
                 {
-                    var nextIndex = _buttonsPressed.IndexOf(_elevator.CurrentFloor + 1);
-                    
+                    var nextIndex = _buttonsPressed.IndexOf(_elevator.CurrentFloor) + 1;
+
                     SetValuesForMovement(_buttonsPressed[nextIndex], _elevator.Status);
                 }
 
-                _buttonsPressed.Remove(_buttonsPressed.First());
+                Move(_elevator.NextFloor, passengers);
             }
 
-            _elevator.Status = Enums.Status.Stopped;
+            StopElevator();
         }
 
         private void MoveUp(int floorSelected)
@@ -126,10 +116,14 @@ namespace DvtElevatorChallenge.Utility
             SetValuesForMovement(floorSelected, Enums.Status.MovingDown);
         }
 
+        private void StopElevator()
+        {
+            _elevator.Status = Enums.Status.Stopped;
+        }
+
         private void SetValuesForMovement(int floorSelected, Enums.Status status)
         {
             _elevator.NextFloor = floorSelected;
-            _elevator.PreviousFloor = _elevator.CurrentFloor;
             _elevator.Status = status;
         }
     }

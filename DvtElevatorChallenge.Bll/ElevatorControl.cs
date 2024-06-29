@@ -2,6 +2,8 @@
 using DvtElevatorChallenge.Data;
 using DvtElevatorChallenge.Utility;
 using DvtElevatorChallenge.Utility.Interfaces;
+using Serilog;
+using Serilog.Events;
 
 namespace DvtElevatorChallenge.Bll
 {
@@ -14,18 +16,20 @@ namespace DvtElevatorChallenge.Bll
             _elevatorHelper = elevatorHelper;
         }
 
-        public List<string> SelectFloor(int floorSelected, List<Passenger> passengers)
+        public Elevator SelectFloor(int floorSelected, List<Passenger> passengers)
         {
-            var response = new List<string>();
-
-            if (!_elevatorHelper.ValidateSelectedFloor(floorSelected))
+            try
             {
-                response.Add(Constants.InvalidError);
+                if (!_elevatorHelper.IsSelectedFloorOutOfRange(floorSelected))
+                    return _elevatorHelper.MoveElevator(floorSelected, passengers);
+                
+                throw new ArgumentOutOfRangeException(Constants.InvalidError);
             }
-            
-            _elevatorHelper.MoveElevator(floorSelected, passengers);
-
-            return response;
+            catch (ArgumentOutOfRangeException aore)
+            {
+                Log.Write(LogEventLevel.Error, aore, Constants.InvalidError);
+                return new Elevator(0, 0, new List<Passenger>());
+            }
         }
     }
 }

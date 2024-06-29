@@ -9,7 +9,7 @@ namespace DvtElevatorChallenge.Utility.Interfaces
 {
     public interface IElevatorHelper
     {
-        string MoveElevator(int floorSelected, List<Passenger> numberOfPassengers);
-        bool ValidateSelectedFloor(int floorSelected);
+        Elevator MoveElevator(int floorSelected, List<Passenger> numberOfPassengers);
+        bool IsSelectedFloorOutOfRange(int floorSelected);
     }
 }

@@ -9,6 +9,6 @@ namespace DvtElevatorChallenge.Bll.Interfaces
 {
     public interface IElevatorControl
     {
-        List<string> SelectFloor(int floorSelected, List<Passenger> passengers);
+        Elevator SelectFloor(int floorSelected, List<Passenger> passengers);
     }
 }

@@ -9,8 +9,8 @@ namespace DvtElevatorChallenge.Utility.Interfaces
 {
     public interface IPassengerHelper
     {
-        List<Passenger> AddPassengers(List<Passenger> passengers, List<Passenger> passengersToAdd);
-        List<Passenger> RemovePassengers(List<Passenger> passengers, List<Passenger> passengersToRemove);
+        List<Passenger> AddPassengers(Elevator elevator, List<Passenger> passengersToAdd);
+        List<Passenger> RemovePassengers(Elevator elevator);
         bool ValidateNumberOfPassengers(int numberOfPassengers, int maximumPassengers);
     }
 }
