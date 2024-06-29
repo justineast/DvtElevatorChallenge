@@ -1,6 +1,5 @@
 using DvtElevatorChallenge.Data;
 using DvtElevatorChallenge.Utility;
-using DvtElevatorChallenge.Utility.Interfaces;
 
 namespace DvtElevatorChallenge.Tests
 {

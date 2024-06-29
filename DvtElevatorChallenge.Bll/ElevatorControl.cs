@@ -1,6 +1,5 @@
 ﻿using DvtElevatorChallenge.Bll.Interfaces;
 using DvtElevatorChallenge.Data;
-using DvtElevatorChallenge.Utility;
 using DvtElevatorChallenge.Utility.Interfaces;
 using Serilog;
 using Serilog.Events;
@@ -16,6 +15,7 @@ namespace DvtElevatorChallenge.Bll
             _elevatorHelper = elevatorHelper;
         }
 
+        //Method used to Interact with the elevator by pressing a button
         public Elevator SelectFloor(int floorSelected, List<Passenger> passengers)
         {
             try

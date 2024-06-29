@@ -1,12 +1,9 @@
 ﻿using DvtElevatorChallenge.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DvtElevatorChallenge.Utility.Interfaces
 {
+    //Interface used to create an instance of the ElevatorHelper class
+    //Lists the methods which are exposed for use
     public interface IElevatorHelper
     {
         Elevator MoveElevator(int floorSelected, List<Passenger> numberOfPassengers);

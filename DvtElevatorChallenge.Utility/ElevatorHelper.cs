@@ -13,6 +13,7 @@ namespace DvtElevatorChallenge.Utility
         private readonly int _topFloor;
         private readonly Elevator _elevator;
 
+        //Constructor written to create and instance of the ElevatorHelper class, with default values
         public ElevatorHelper(List<int>? buttonsPressed = null, int maxPassengers = 10, int topFloor = 10, Elevator? elevator = null, IPassengerHelper? passengerHelper = null)
         {
             _passengerHelper = passengerHelper ?? new PassengerHelper();
@@ -22,11 +23,13 @@ namespace DvtElevatorChallenge.Utility
             _elevator = elevator ?? new Elevator(_maxPassengers, _topFloor, new List<Passenger>());
         }
 
+        //Method used to check if the selected option is allowed
         public bool IsSelectedFloorOutOfRange(int floorSelected)
         {
             return floorSelected < 0 || floorSelected > _topFloor;
         }
 
+        //Method used to Move the elevator based on the current floor, which buttons were pressed and what sequence they were pressed in.
         public Elevator MoveElevator(int floorSelected, List<Passenger> passengers)
         {
             try
