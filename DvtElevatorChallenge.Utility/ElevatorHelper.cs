@@ -11,8 +11,9 @@ namespace DvtElevatorChallenge.Utility
         private List<int> _buttonsPressed;
         private readonly int _maxPassengers;
         private readonly int _topFloor;
-        private Elevator _elevator;
+        private readonly Elevator _elevator;
 
+        //Constructor written to create and instance of the ElevatorHelper class, with default values
         public ElevatorHelper(List<int>? buttonsPressed = null, int maxPassengers = 10, int topFloor = 10, Elevator? elevator = null, IPassengerHelper? passengerHelper = null)
         {
             _passengerHelper = passengerHelper ?? new PassengerHelper();
@@ -22,11 +23,13 @@ namespace DvtElevatorChallenge.Utility
             _elevator = elevator ?? new Elevator(_maxPassengers, _topFloor, new List<Passenger>());
         }
 
+        //Method used to check if the selected option is allowed
         public bool IsSelectedFloorOutOfRange(int floorSelected)
         {
             return floorSelected < 0 || floorSelected > _topFloor;
         }
 
+        //Method used to Move the elevator based on the current floor, which buttons were pressed and what sequence they were pressed in.
         public Elevator MoveElevator(int floorSelected, List<Passenger> passengers)
         {
             try
@@ -51,7 +54,7 @@ namespace DvtElevatorChallenge.Utility
                 _buttonsPressed.Add(floorSelected);
                 _buttonsPressed = _buttonsPressed.Distinct().OrderBy(bp => bp).ToList();
 
-                KeepMovingUntilAllButtonPressesComplete(floorSelected, passengers);
+                KeepMovingUntilAllButtonPressesComplete(passengers);
             }
             catch (Exception ex)
             {
@@ -82,16 +85,16 @@ namespace DvtElevatorChallenge.Utility
             _elevator.CurrentFloor = destination;
         }
         
-        private void KeepMovingUntilAllButtonPressesComplete(int floorSelected, List<Passenger> passengers)
+        private void KeepMovingUntilAllButtonPressesComplete(List<Passenger> passengers)
         {
             while (_buttonsPressed.Count > 0)
             {
+                _elevator.CurrentFloor = _buttonsPressed.First();
+
                 if (IsSelectedFloorOutOfRange(_elevator.CurrentFloor))
                 {
                     break;
                 }
-
-                _elevator.CurrentFloor = _buttonsPressed.First();
 
                 if (_buttonsPressed.Count > 1)
                 {
