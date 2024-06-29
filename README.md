@@ -30,19 +30,12 @@ Prerequisites:
 - Access to the GitHub Repo.
 	- https://github.com/justineastmc/DvtElevatorChallenge
 
-Instructions on how to install:
+# Instructions on how to install:
+ - dotnet restore
+ - dotnet build
  
-\`\`\`bash
-# Installation commands
-dotnet restore
-dotnet build
-\`\`\`
- 
- 
-\`\`\`bash
 # Usage
-dotnet run
-\`\`\`
+- dotnet run
 - You can run the exe that is generated after compiliation
 - You can debug this in an IDE like Visual Studio
 
