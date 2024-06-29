@@ -11,7 +11,7 @@ namespace DvtElevatorChallenge.Utility
         private List<int> _buttonsPressed;
         private readonly int _maxPassengers;
         private readonly int _topFloor;
-        private Elevator _elevator;
+        private readonly Elevator _elevator;
 
         public ElevatorHelper(List<int>? buttonsPressed = null, int maxPassengers = 10, int topFloor = 10, Elevator? elevator = null, IPassengerHelper? passengerHelper = null)
         {
@@ -51,7 +51,7 @@ namespace DvtElevatorChallenge.Utility
                 _buttonsPressed.Add(floorSelected);
                 _buttonsPressed = _buttonsPressed.Distinct().OrderBy(bp => bp).ToList();
 
-                KeepMovingUntilAllButtonPressesComplete(floorSelected, passengers);
+                KeepMovingUntilAllButtonPressesComplete(passengers);
             }
             catch (Exception ex)
             {
@@ -82,16 +82,16 @@ namespace DvtElevatorChallenge.Utility
             _elevator.CurrentFloor = destination;
         }
         
-        private void KeepMovingUntilAllButtonPressesComplete(int floorSelected, List<Passenger> passengers)
+        private void KeepMovingUntilAllButtonPressesComplete(List<Passenger> passengers)
         {
             while (_buttonsPressed.Count > 0)
             {
+                _elevator.CurrentFloor = _buttonsPressed.First();
+
                 if (IsSelectedFloorOutOfRange(_elevator.CurrentFloor))
                 {
                     break;
                 }
-
-                _elevator.CurrentFloor = _buttonsPressed.First();
 
                 if (_buttonsPressed.Count > 1)
                 {
