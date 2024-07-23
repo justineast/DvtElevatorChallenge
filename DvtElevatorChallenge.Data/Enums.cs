@@ -2,11 +2,16 @@
 {
     public class Enums
     {
-        public enum Status
+        public enum State
         {
-            MovingUp,
-            MovingDown,
+            Moving,
+            Idle,
             Stopped
+        }
+        public enum Direction
+        {
+            Up,
+            Down
         }
 
         public enum ElevatorType

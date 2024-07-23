@@ -41,7 +41,7 @@ namespace DvtElevatorChallenge.Tests
         {
             var passengerHelper = new PassengerHelper();
 
-            var response = passengerHelper.AddPassengers(new Elevator(10, 10, new List<Passenger>()), new List<Passenger>());
+            var response = passengerHelper.AddPassengers(new Elevator(10), new List<Passenger>());
 
             Assert.IsNotNull(response);
             Assert.AreEqual(0, response.Count);
@@ -54,14 +54,14 @@ namespace DvtElevatorChallenge.Tests
 
             var passengers = new List<Passenger>
             {
-                new Passenger
+                new()
                 {
                     CurrentFloor = 0,
                     PassengerType = Enums.PassengerType.Person
                 }
             };
 
-            var response = passengerHelper.AddPassengers(new Elevator(10, 10, new List<Passenger>()), passengers);
+            var response = passengerHelper.AddPassengers(new Elevator(10), passengers);
 
             Assert.IsNotNull(response);
             Assert.AreEqual(1, response.Count);
@@ -73,7 +73,7 @@ namespace DvtElevatorChallenge.Tests
         {
             var passengerHelper = new PassengerHelper();
             
-            var response = passengerHelper.RemovePassengers(new Elevator(10, 10, new List<Passenger>()));
+            var response = passengerHelper.RemovePassengers(new Elevator(10));
 
             Assert.IsNotNull(response);
             Assert.AreEqual(0, response.Count);
@@ -86,14 +86,14 @@ namespace DvtElevatorChallenge.Tests
 
             var passengers = new List<Passenger>
             {
-                new Passenger
+                new()
                 {
                     CurrentFloor = 0,
                     PassengerType = Enums.PassengerType.Person
                 }
             };
 
-            var elevator = new Elevator(10, 10, passengers);
+            var elevator = new Elevator(10);
             var response = passengerHelper.RemovePassengers(elevator);
 
             Assert.IsNotNull(response);

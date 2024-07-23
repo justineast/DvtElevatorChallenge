@@ -1,49 +1,39 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using DvtElevatorChallenge.Bll;
-using DvtElevatorChallenge.Bll.Interfaces;
 using DvtElevatorChallenge.Data;
-using DvtElevatorChallenge.Utility;
-using DvtElevatorChallenge.Utility.Interfaces;
 
-Console.WriteLine("Hello, World!");
+var manager = new ElevatorManager(3);
 
-var buttonsPressed = new List<int>
+// Simulate some requests
+manager.RequestElevator(5, Enums.Direction.Up);
+manager.RequestElevator(3, Enums.Direction.Down);
+manager.RequestElevator(1, Enums.Direction.Up);
+
+// Perform maintenance on elevator 1
+manager.PerformMaintenance(1);
+
+// Move the elevators a few times
+for (var i = 0; i < 10; i++)
 {
-    1, 5, 4, 6, 7, 3, 4, 5
-};
+    Console.WriteLine($"--- Step {i + 1} ---");
+    manager.MoveElevators();
+    manager.PrintStatus();
+    Thread.Sleep(1000); // Simulate time passing
+}
 
-IElevatorHelper helper = new ElevatorHelper(buttonsPressed);
-IElevatorControl elevator = new ElevatorControl(helper);
+// Complete maintenance on elevator 1
+manager.CompleteMaintenance(1);
 
-var passengers = new List<Passenger>
+// More requests after maintenance
+manager.RequestElevator(7, Enums.Direction.Up);
+manager.RequestElevator(4, Enums.Direction.Down);
+
+// Move the elevators again
+for (int i = 0; i < 10; i++)
 {
-    new()
-    {
-        Id = 1,
-        PassengerType = Enums.PassengerType.Person,
-        SelectedFloor = 4
-    },
-    new()
-    {
-        Id = 2,
-        PassengerType = Enums.PassengerType.Person,
-        SelectedFloor = 3
-    },
-    new()
-    {
-        Id = 3,
-        PassengerType = Enums.PassengerType.Person,
-        SelectedFloor = 1
-    },
-    new()
-    {
-        Id = 4,
-        PassengerType = Enums.PassengerType.Person,
-        SelectedFloor = 5
-    }
-};
-var selectedFloor = -5;
-var responseElevator =  elevator.SelectFloor(selectedFloor, passengers);
-
-Console.WriteLine($"The elevator stopped on Floor {responseElevator.CurrentFloor}");
+    Console.WriteLine($"--- Step {i + 1} ---");
+    manager.MoveElevators();
+    manager.PrintStatus();
+    Thread.Sleep(1000); // Simulate time passing
+}

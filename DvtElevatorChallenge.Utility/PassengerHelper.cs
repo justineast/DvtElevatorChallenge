@@ -15,27 +15,28 @@ namespace DvtElevatorChallenge.Utility
         //Method written to manage the passenger movement into the Elevator
         public List<Passenger> AddPassengers(Elevator elevator, List<Passenger> passengersToAdd)
         {
-            var passengers = new List<Passenger>(passengersToAdd);
+            //var passengers = new List<Passenger>(passengersToAdd);
 
-            foreach (var passenger in passengers.Where(passenger => elevator.CurrentFloor == passenger.CurrentFloor && elevator.Passengers.Count < elevator.MaximumPassengers))
-            {
-                elevator.Passengers.Add(passenger);
-            }
+            //foreach (var passenger in passengers.Where(passenger => elevator.CurrentFloor == passenger.CurrentFloor && elevator.Passengers.Count < elevator.MaximumPassengers))
+            //{
+            //    elevator.Passengers.Add(passenger);
+            //}
 
-            return elevator.Passengers;
+            return null;
         }
 
         //Method written to manage the passenger movement out of the Elevator
         public List<Passenger> RemovePassengers(Elevator elevator)
         {
-            var passengers = new List<Passenger>(elevator.Passengers);
+            //var passengers = new List<Passenger>(elevator.Passengers);
 
-            foreach (var passenger in passengers.Where(passenger => elevator.CurrentFloor == passenger.SelectedFloor))
-            {
-                elevator.Passengers.Remove(passenger);
-            }
+            //foreach (var passenger in passengers.Where(passenger => elevator.CurrentFloor == passenger.SelectedFloor))
+            //{
+            //    //elevator.Passengers.Remove(passenger);
+            //}
 
-            return elevator.Passengers;
+            //return elevator.Passengers;
+            return null;
         }
     }
 }
