@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DvtElevatorChallenge.Data;
+﻿using DvtElevatorChallenge.Data;
 
 namespace DvtElevatorChallenge.Utility.Interfaces
 {
@@ -11,10 +6,10 @@ namespace DvtElevatorChallenge.Utility.Interfaces
     {
         int Id { get; }
         int CurrentFloor { get; }
-        Enums.State State { get; }
         Enums.Direction Direction { get; }
         bool IsInMaintenance { get; }
 
+        void AddPassenger(Passenger passenger);
         void AddRequest(int floor);
         void Move();
         void PerformMaintenance();

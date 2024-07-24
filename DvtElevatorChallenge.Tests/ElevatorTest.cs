@@ -1,6 +1,4 @@
-using DvtElevatorChallenge.Data;
 using DvtElevatorChallenge.Utility;
-using DvtElevatorChallenge.Utility.Interfaces;
 
 namespace DvtElevatorChallenge.Tests
 {
@@ -8,13 +6,12 @@ namespace DvtElevatorChallenge.Tests
     public class ElevatorTest
     {
         [TestMethod]
-        public void IsSelectedFloorOutOfRangeTest_FloorLessThanZero()
+        public void AddRequest_RequestsDoesNotContainValue()
         {
             //var elevator = new Elevator(1);
-            
-            //var response = elevator.(-1);
+            //elevator.AddRequest(-1);
 
-            //Assert.IsTrue(response);
+            //Assert.IsTrue(elevator.);
         }
 
         [TestMethod]

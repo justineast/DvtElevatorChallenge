@@ -1,5 +1,4 @@
-﻿using DvtElevatorChallenge.Data;
-using DvtElevatorChallenge.Utility;
+﻿using DvtElevatorChallenge.Utility;
 using DvtElevatorChallenge.Bll.Interfaces;
 using DvtElevatorChallenge.Utility.Interfaces;
 
@@ -8,13 +7,18 @@ namespace DvtElevatorChallenge.Bll
     public class ElevatorManager : IElevatorManager
     {
         private readonly List<IElevator> _elevators;
-        private readonly Dictionary<int, List<(int floor, Enums.Direction direction)>> _floorRequests;
+        private readonly Dictionary<int, List<Passenger>> _passengerRequests;
         private readonly IRequestAllocationStrategy _allocationStrategy;
 
         public ElevatorManager(int numberOfElevators, IRequestAllocationStrategy allocationStrategy)
         {
+            if (numberOfElevators <= 0)
+            {
+                throw new ArgumentException("Number of elevators must be positive.");
+            }
+
             _elevators = new List<IElevator>();
-            _floorRequests = new Dictionary<int, List<(int floor, Enums.Direction direction)>>();
+            _passengerRequests = new Dictionary<int, List<Passenger>>();
             _allocationStrategy = allocationStrategy;
 
             for (var i = 0; i < numberOfElevators; i++)
@@ -23,34 +27,48 @@ namespace DvtElevatorChallenge.Bll
             }
         }
 
-        public void RequestElevator(int floor, Enums.Direction direction)
+        public void RequestElevator(Passenger passenger)
         {
-            if (!_floorRequests.TryGetValue(floor, out var value))
+            if (passenger == null)
             {
-                value = new List<(int floor, Enums.Direction direction)>();
-                _floorRequests[floor] = value;
+                throw new ArgumentNullException(nameof(passenger));
             }
 
-            value.Add((floor, direction));
+            if (!_passengerRequests.TryGetValue(passenger.CurrentFloor, out var value))
+            {
+                value = new List<Passenger>();
+                _passengerRequests[passenger.CurrentFloor] = value;
+            }
+
+            value.Add(passenger);
             AllocateRequests();
         }
 
         private void AllocateRequests()
         {
-            foreach (var floorRequest in _floorRequests.ToList())
+            foreach (var passengerRequest in _passengerRequests.ToList())
             {
-                var requests = floorRequest.Value.ToList();
-                foreach (var request in requests)
-                {
-                    var bestElevator = _allocationStrategy.FindBestElevator(_elevators, request.floor, request.direction);
-                    if (bestElevator == null)
-                        continue;
 
-                    bestElevator.AddRequest(request.floor);
-                    _floorRequests[request.floor].Remove(request);
-                    if (_floorRequests[request.floor].Count == 0)
+                var passengers = passengerRequest.Value.ToList();
+                foreach (var passenger in passengers)
+                {
+                    try
                     {
-                        _floorRequests.Remove(request.floor);
+                        var bestElevator = _allocationStrategy.FindBestElevator(_elevators, passenger.CurrentFloor, passenger.Direction);
+                        if (bestElevator == null)
+                            continue;
+
+                        bestElevator.AddRequest(passenger.CurrentFloor);
+                        bestElevator.AddPassenger(passenger);
+                        _passengerRequests[passenger.CurrentFloor].Remove(passenger);
+                        if (_passengerRequests[passenger.CurrentFloor].Count == 0)
+                        {
+                            _passengerRequests.Remove(passenger.CurrentFloor);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error allocating request for passenger {passenger.Id}: {ex.Message}");
                     }
                 }
             }
@@ -60,7 +78,14 @@ namespace DvtElevatorChallenge.Bll
         {
             foreach (var elevator in _elevators)
             {
-                elevator.Move();
+                try
+                {
+                    elevator.Move();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error moving elevator {elevator.Id}: {ex.Message}");
+                }
             }
 
             AllocateRequests();
@@ -68,14 +93,28 @@ namespace DvtElevatorChallenge.Bll
 
         public void PerformMaintenance(int elevatorId)
         {
-            var elevator = _elevators.FirstOrDefault(e => e.Id == elevatorId);
-            elevator?.PerformMaintenance();
+            try
+            {
+                var elevator = _elevators.FirstOrDefault(e => e.Id == elevatorId);
+                elevator?.PerformMaintenance();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error performing maintenance on elevator {elevatorId}: {ex.Message}");
+            }
         }
 
         public void CompleteMaintenance(int elevatorId)
         {
-            var elevator = _elevators.FirstOrDefault(e => e.Id == elevatorId);
-            elevator?.CompleteMaintenance();
+            try
+            {
+                var elevator = _elevators.FirstOrDefault(e => e.Id == elevatorId);
+                elevator?.CompleteMaintenance();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error completing maintenance on elevator {elevatorId}: {ex.Message}");
+            }
         }
 
         public void PrintStatus()

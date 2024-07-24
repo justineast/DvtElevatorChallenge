@@ -1,9 +1,4 @@
 ﻿using DvtElevatorChallenge.Utility.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DvtElevatorChallenge.Data;
 
 namespace DvtElevatorChallenge.Utility
@@ -20,7 +15,7 @@ namespace DvtElevatorChallenge.Utility
                 if (elevator.IsInMaintenance) 
                     continue;
 
-                if (elevator.State != Enums.State.Idle &&
+                if (elevator.Direction != Enums.Direction.Idle &&
                     (elevator.Direction != Enums.Direction.Up || direction != Enums.Direction.Up ||
                      elevator.CurrentFloor > floor) &&
                     (elevator.Direction != Enums.Direction.Down || direction != Enums.Direction.Down ||

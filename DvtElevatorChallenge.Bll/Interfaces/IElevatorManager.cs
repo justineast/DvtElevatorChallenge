@@ -1,4 +1,4 @@
-﻿using DvtElevatorChallenge.Data;
+﻿using DvtElevatorChallenge.Utility;
 
 namespace DvtElevatorChallenge.Bll.Interfaces
 {
@@ -7,7 +7,7 @@ namespace DvtElevatorChallenge.Bll.Interfaces
     //Used to access the methods which are used to request the elevator and control the movement of the elevator
     public interface IElevatorManager
     {
-        void RequestElevator(int floor, Enums.Direction direction);
+        void RequestElevator(Passenger passenger);
         void MoveElevators();
         void PerformMaintenance(int elevatorId);
         void CompleteMaintenance(int elevatorId);

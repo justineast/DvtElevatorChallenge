@@ -7,18 +7,18 @@ namespace DvtElevatorChallenge.Utility
     {
         public int Id { get; private set; }
         public int CurrentFloor { get; private set; }
-        public State State { get; private set; }
         public Direction Direction { get; private set; }
         private readonly List<int> _requests;
+        private readonly List<Passenger> _passengers;
         public bool IsInMaintenance { get; private set; }
 
         public Elevator(int id)
         {
             Id = id;
             CurrentFloor = 0;
-            State = State.Idle;
             Direction = Direction.Up;
             _requests = new List<int>();
+            _passengers = new List<Passenger>();
             IsInMaintenance = false;
         }
 
@@ -30,6 +30,20 @@ namespace DvtElevatorChallenge.Utility
             }
         }
 
+        public void AddPassenger(Passenger passenger)
+        {
+            if (_passengers.Contains(passenger)) 
+                return;
+
+            _passengers.Add(passenger);
+            AddRequest(passenger.DestinationFloor);
+        }
+
+        private void DropOffPassengers()
+        {
+            _passengers.RemoveAll(p => p.DestinationFloor == CurrentFloor);
+        }
+
         public void PerformMaintenance()
         {
             IsInMaintenance = true;
@@ -38,8 +52,9 @@ namespace DvtElevatorChallenge.Utility
         public void CompleteMaintenance()
         {
             IsInMaintenance = false;
-            State = State.Idle;
+            Direction = Direction.Idle;
             _requests.Clear();
+            _passengers.Clear();
         }
 
         public void Move()
@@ -69,21 +84,22 @@ namespace DvtElevatorChallenge.Utility
                     return;
 
                 _requests.RemoveAt(0);
+                DropOffPassengers();
 
                 if (_requests.Count == 0)
                 {
-                    State = State.Idle;
+                    Direction = Direction.Idle;
                 }
             }
             else
             {
-                State = State.Idle;
+                Direction = Direction.Idle;
             }
         }
 
         public override string ToString()
         {
-            return $"Elevator {Id}: Floor {CurrentFloor}, Direction {Direction}, Maintenance: {IsInMaintenance}";
+            return $"Elevator {Id}: Floor {CurrentFloor}, Direction {Direction}, Maintenance: {IsInMaintenance}, Passengers: {_passengers.Count}";
         }
     }
 }
