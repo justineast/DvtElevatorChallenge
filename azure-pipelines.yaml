@@ -1,0 +1,46 @@
+trigger:
+  branches:
+    include:
+      - dev
+      - master
+ 
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  - template: .build/Variables.yaml
+ 
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: ${{ variables.dotnetVersion }}
+ 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'restore'
+    projects: '**/*.csproj'
+ 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.sln'
+    arguments: '--configuration ${{ variables.buildConfiguration }}'
+ 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration ${{ variables.buildConfiguration }} --no-build --verbosity normal'
+ 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'publish'
+    projects: '**/*.csproj'
+    arguments: '--configuration ${{ variables.buildConfiguration }} --output $(Build.ArtifactStagingDirectory)'
+ 
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'

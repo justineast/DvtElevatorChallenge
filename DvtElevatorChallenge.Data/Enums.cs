@@ -2,26 +2,12 @@
 {
     public class Enums
     {
-        public enum Status
+        public enum Direction
         {
-            MovingUp,
-            MovingDown,
+            Up,
+            Down,
+            Idle,
             Stopped
-        }
-
-        public enum ElevatorType
-        {
-            Passenger,
-            Freight,
-            HighSpeed,
-            Glass,
-            Service
-        }
-
-        public enum PassengerType
-        {
-            Person,
-            Package
         }
     }
 }

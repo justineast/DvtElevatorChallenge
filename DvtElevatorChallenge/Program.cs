@@ -1,49 +1,69 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using DvtElevatorChallenge.Bll;
-using DvtElevatorChallenge.Bll.Interfaces;
-using DvtElevatorChallenge.Data;
 using DvtElevatorChallenge.Utility;
-using DvtElevatorChallenge.Utility.Interfaces;
 
-Console.WriteLine("Hello, World!");
-
-var buttonsPressed = new List<int>
+try
 {
-    1, 5, 4, 6, 7, 3, 4, 5
-};
+    var allocationStrategy = new DefaultRequestAllocationStrategy();
+    //Create an instance of the Elevator
+    var manager = new ElevatorManager(3, allocationStrategy);
 
-IElevatorHelper helper = new ElevatorHelper(buttonsPressed);
-IElevatorControl elevator = new ElevatorControl(helper);
+    // Simulate some passenger requests
+    try
+    {
+        var passenger1 = new Passenger(1, 0, 5);
+        var passenger2 = new Passenger(2, 3, 1);
+        var passenger3 = new Passenger(3, 2, 8);
 
-var passengers = new List<Passenger>
-{
-    new()
-    {
-        Id = 1,
-        PassengerType = Enums.PassengerType.Person,
-        SelectedFloor = 4
-    },
-    new()
-    {
-        Id = 2,
-        PassengerType = Enums.PassengerType.Person,
-        SelectedFloor = 3
-    },
-    new()
-    {
-        Id = 3,
-        PassengerType = Enums.PassengerType.Person,
-        SelectedFloor = 1
-    },
-    new()
-    {
-        Id = 4,
-        PassengerType = Enums.PassengerType.Person,
-        SelectedFloor = 5
+        manager.RequestElevator(passenger1);
+        manager.RequestElevator(passenger2);
+        manager.RequestElevator(passenger3);
     }
-};
-var selectedFloor = -5;
-var responseElevator =  elevator.SelectFloor(selectedFloor, passengers);
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error creating passengers: {ex.Message}");
+    }
 
-Console.WriteLine($"The elevator stopped on Floor {responseElevator.CurrentFloor}");
+    // Perform maintenance on elevator 2
+    manager.PerformMaintenance(1);
+
+    // Move the elevators a few times
+    for (int i = 0; i < 10; i++)
+    {
+        Console.WriteLine($"--- Step {i + 1} ---");
+        manager.MoveElevators();
+        manager.PrintStatus();
+        Thread.Sleep(1000); // Simulate time passing
+    }
+
+    // Complete maintenance on elevator 1
+    manager.CompleteMaintenance(1);
+
+    // More passenger requests after maintenance
+    try
+    {
+        var passenger4 = new Passenger(4, 6, 2);
+        var passenger5 = new Passenger(5, 1, 7);
+
+        manager.RequestElevator(passenger4);
+        manager.RequestElevator(passenger5);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error creating passengers: {ex.Message}");
+    }
+
+    // Move the elevators again
+    for (int i = 0; i < 10; i++)
+    {
+        Console.WriteLine($"--- Step {i + 1} ---");
+        manager.MoveElevators();
+        manager.PrintStatus();
+        Thread.Sleep(1000); // Simulate time passing
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Unexpected error: {ex.Message}");
+}

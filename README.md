@@ -2,7 +2,7 @@
 
 # Elevator Challenge App
  
-This application manages elevators using .NET 6.
+This application manages elevators using .NET 8.
  
 ## Table of Contents
  
@@ -26,7 +26,7 @@ Key Features:
 ## Installation
  
 Prerequisites:
-- dotnet 6 SDK (For development purposes).
+- dotnet 8 SDK (For development purposes).
 - Access to the GitHub Repo.
 	- https://github.com/justineastmc/DvtElevatorChallenge
 
@@ -39,3 +39,11 @@ Prerequisites:
 - You can run the exe that is generated after compiliation
 - You can debug this in an IDE like Visual Studio
 
+## Build and Deploy
+
+- An azure-pipelines.yaml file has been added to build the application using the DotNetCoreCLI@2 through ADO
+- This would simulate the following steps:
+	- Restore nuget packages added
+	- Build the solution
+	- Run any Unit Tests
+	- Publish the artifact to the $(Build.ArtifactStagingDirectory) location
