@@ -27,12 +27,10 @@ namespace DvtElevatorChallenge.Bll
             }
         }
 
+        //Method used to add a request to call the closest elevator to pick up the customer
         public void RequestElevator(Passenger passenger)
         {
-            if (passenger == null)
-            {
-                throw new ArgumentNullException(nameof(passenger));
-            }
+            ArgumentNullException.ThrowIfNull(passenger);
 
             if (!_passengerRequests.TryGetValue(passenger.CurrentFloor, out var value))
             {
@@ -44,6 +42,8 @@ namespace DvtElevatorChallenge.Bll
             AllocateRequests();
         }
 
+        //Method used to allocate the best elevator to pick up the passenger
+        //Logic is applied to find the best elevator for the desired floor request
         private void AllocateRequests()
         {
             foreach (var passengerRequest in _passengerRequests.ToList())
@@ -74,6 +74,7 @@ namespace DvtElevatorChallenge.Bll
             }
         }
 
+        //Method used to move the elevators
         public void MoveElevators()
         {
             foreach (var elevator in _elevators)

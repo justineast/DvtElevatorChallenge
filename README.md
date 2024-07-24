@@ -2,7 +2,7 @@
 
 # Elevator Challenge App
  
-This application manages elevators using .NET 6.
+This application manages elevators using .NET 8.
  
 ## Table of Contents
  
@@ -26,7 +26,7 @@ Key Features:
 ## Installation
  
 Prerequisites:
-- dotnet 6 SDK (For development purposes).
+- dotnet 8 SDK (For development purposes).
 - Access to the GitHub Repo.
 	- https://github.com/justineastmc/DvtElevatorChallenge
 

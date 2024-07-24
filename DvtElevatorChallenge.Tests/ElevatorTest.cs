@@ -1,4 +1,7 @@
+using DvtElevatorChallenge.Data;
 using DvtElevatorChallenge.Utility;
+using System.Drawing;
+using DvtElevatorChallenge.Utility.Interfaces;
 
 namespace DvtElevatorChallenge.Tests
 {
@@ -6,99 +9,72 @@ namespace DvtElevatorChallenge.Tests
     public class ElevatorTest
     {
         [TestMethod]
-        public void AddRequest_RequestsDoesNotContainValue()
+        public void Move_IsInMaintenanceTrue()
         {
-            //var elevator = new Elevator(1);
-            //elevator.AddRequest(-1);
+            var elevator = new Elevator(1);
+            //Used to set the IsInMaintenance value to true
+            elevator.PerformMaintenance();
 
-            //Assert.IsTrue(elevator.);
+            elevator.Move();
+
+            Assert.IsTrue(elevator.IsInMaintenance);
         }
 
         [TestMethod]
-        public void IsSelectedFloorOutOfRangeTest_FloorEqualToZero()
+        public void Move_IsInMaintenanceFalse_RequestsEqualZero()
         {
-            //var elevator = new Elevator(1);
+            var elevator = new Elevator(1);
 
-            //var response = elevatorHelper.IsSelectedFloorOutOfRange(0);
+            elevator.Move();
 
-            //Assert.IsFalse(response);
+            Assert.AreEqual(Enums.Direction.Idle, elevator.Direction);
         }
 
         [TestMethod]
-        public void IsSelectedFloorOutOfRangeTest_FloorMoreThanZero_LessThanTopFloor()
+        public void Move_IsInMaintenanceFalse_RequestsMoreThanZero_CurrentFloorLessThanTarget()
         {
-            //var elevator = new Elevator(1);
+            var elevator = new Elevator(1);
 
-            //var response = elevatorHelper.IsSelectedFloorOutOfRange(1);
+            //Used to Add a request to the Elevator
+            elevator.AddRequest(1);
 
-            //Assert.IsFalse(response);
+            elevator.Move();
+            
+            Assert.AreEqual(1, elevator.CurrentFloor);
         }
 
         [TestMethod]
-        public void IsSelectedFloorOutOfRangeTest_FloorMoreThanTopFloor()
+        public void Move_IsInMaintenanceFalse_RequestsMoreThanZero_CurrentFloorMoreThanTarget()
         {
-            //var elevator = new Elevator(1);
+            //Sets the CurrentFloor of the Elevator
+            var elevator = new Elevator(1, 2);
 
-            //var response = elevatorHelper.IsSelectedFloorOutOfRange(11);
+            //Used to Add a request to the Elevator
+            elevator.AddRequest(1);
 
-            //Assert.IsTrue(response);
+            elevator.Move();
+
+            Assert.AreEqual(1, elevator.CurrentFloor);
         }
         
         [TestMethod]
-        public void MoveElevator_FloorGreaterThanTopFloor()
+        public void CompleteMaintenanceTest()
         {
-            //var elevator = new Elevator(1);
+            var elevator = new Elevator(1);
+            
+            elevator.CompleteMaintenance();
 
-            //var response = elevatorHelper.MoveElevator(11, new List<Passenger>());
-
-            //Assert.IsNotNull(response);
-            //Assert.AreEqual(0, response.CurrentFloor);
+            Assert.AreEqual(Enums.Direction.Idle, elevator.Direction);
         }
 
         [TestMethod]
-        public void MoveElevator_NumberOfPassengersGreaterThanMax()
+        public void PerformMaintenanceTest()
         {
-            //var passengerHelperMoq = new Moq.Mock<IPassengerHelper>();
-            //passengerHelperMoq.Setup(pm => pm.ValidateNumberOfPassengers(10, 5)).Returns(false);
+            var elevator = new Elevator(1);
 
-            //var elevator = new Elevator(1);
+            elevator.PerformMaintenance();
 
-            //var response = elevatorHelper.MoveElevator(1, new List<Passenger>());
-
-            //Assert.IsNotNull(response);
-            //Assert.AreEqual(0, response.CurrentFloor);
-        }
-
-        [TestMethod]
-        public void MoveElevator_FloorLessThanZero()
-        {
-            //var passengerHelperMoq = new Moq.Mock<IPassengerHelper>();
-            //passengerHelperMoq.SetReturnsDefault(true);
-            //passengerHelperMoq.Setup(pm => pm.ValidateNumberOfPassengers(10, 15));
-
-            //var elevator = new Elevator(1);
-
-            //var response = elevatorHelper.MoveElevator(-1, new List<Passenger>());
-
-            //Assert.IsNotNull(response);
-            //Assert.AreEqual(-1, response.CurrentFloor);
-        }
-
-        [TestMethod]
-        public void MoveElevator_MoreThanOneButtonPress()
-        {
-            //var passengerHelperMoq = new Moq.Mock<IPassengerHelper>();
-            //passengerHelperMoq.SetReturnsDefault(true);
-            //passengerHelperMoq.Setup(pm => pm.ValidateNumberOfPassengers(10, 15));
-
-            //var buttonPressed = new List<int> { 1, 2 };
-
-            //var elevator = new Elevator(1);
-
-            //var response = elevatorHelper.MoveElevator(1, new List<Passenger>());
-
-            //Assert.IsNotNull(response);
-            //Assert.AreEqual(2, response.CurrentFloor);
+            Assert.IsTrue(elevator.IsInMaintenance);
         }
     }
 }

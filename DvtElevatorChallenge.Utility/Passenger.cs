@@ -9,6 +9,7 @@ namespace DvtElevatorChallenge.Utility
         public int CurrentFloor { get; private set; }
         public int DestinationFloor { get; private set; }
 
+        //Constructor used to create an instance of the Passenger along with the requested floor they would like to go to
         public Passenger(int id, int currentFloor, int destinationFloor)
         {
             if (currentFloor < 0 || destinationFloor < 0)

@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DvtElevatorChallenge.Bll\DvtElevatorChallenge.Bll.csproj" />
     <ProjectReference Include="..\DvtElevatorChallenge.Utility\DvtElevatorChallenge.Utility.csproj" />
   </ItemGroup>
 
