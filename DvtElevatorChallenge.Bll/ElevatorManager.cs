@@ -1,18 +1,21 @@
 ﻿using DvtElevatorChallenge.Data;
 using DvtElevatorChallenge.Utility;
 using DvtElevatorChallenge.Bll.Interfaces;
+using DvtElevatorChallenge.Utility.Interfaces;
 
 namespace DvtElevatorChallenge.Bll
 {
     public class ElevatorManager : IElevatorManager
     {
-        private readonly List<Elevator> _elevators;
+        private readonly List<IElevator> _elevators;
         private readonly Dictionary<int, List<(int floor, Enums.Direction direction)>> _floorRequests;
+        private readonly IRequestAllocationStrategy _allocationStrategy;
 
-        public ElevatorManager(int numberOfElevators)
+        public ElevatorManager(int numberOfElevators, IRequestAllocationStrategy allocationStrategy)
         {
-            _elevators = new List<Elevator>();
+            _elevators = new List<IElevator>();
             _floorRequests = new Dictionary<int, List<(int floor, Enums.Direction direction)>>();
+            _allocationStrategy = allocationStrategy;
 
             for (var i = 0; i < numberOfElevators; i++)
             {
@@ -22,7 +25,7 @@ namespace DvtElevatorChallenge.Bll
 
         public void RequestElevator(int floor, Enums.Direction direction)
         {
-            if (!_floorRequests.TryGetValue(floor, out List<(int floor, Enums.Direction direction)>? value))
+            if (!_floorRequests.TryGetValue(floor, out var value))
             {
                 value = new List<(int floor, Enums.Direction direction)>();
                 _floorRequests[floor] = value;
@@ -39,7 +42,7 @@ namespace DvtElevatorChallenge.Bll
                 var requests = floorRequest.Value.ToList();
                 foreach (var request in requests)
                 {
-                    var bestElevator = FindBestElevator(request.floor, request.direction);
+                    var bestElevator = _allocationStrategy.FindBestElevator(_elevators, request.floor, request.direction);
                     if (bestElevator == null)
                         continue;
 
@@ -51,33 +54,6 @@ namespace DvtElevatorChallenge.Bll
                     }
                 }
             }
-        }
-
-        private Elevator? FindBestElevator(int floor, Enums.Direction direction)
-        {
-            Elevator? bestElevator = null;
-            var minDistance = int.MaxValue;
-
-            foreach (var elevator in _elevators)
-            {
-                if (elevator.IsInMaintenance) continue;
-
-                if (elevator.State != Enums.State.Idle &&
-                    (elevator.Direction != Enums.Direction.Up || direction != Enums.Direction.Up ||
-                     elevator.CurrentFloor > floor) &&
-                    (elevator.Direction != Enums.Direction.Down || direction != Enums.Direction.Down ||
-                     elevator.CurrentFloor < floor)) 
-                    continue;
-
-                var distance = Math.Abs(elevator.CurrentFloor - floor);
-                if (distance >= minDistance) 
-                    continue;
-
-                bestElevator = elevator;
-                minDistance = distance;
-            }
-
-            return bestElevator ?? _elevators.OrderBy(e => Math.Abs(e.CurrentFloor - floor)).FirstOrDefault(e => !e.IsInMaintenance);
         }
 
         public void MoveElevators()

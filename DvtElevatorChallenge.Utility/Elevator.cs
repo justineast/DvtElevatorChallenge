@@ -3,7 +3,7 @@ using static DvtElevatorChallenge.Data.Enums;
 
 namespace DvtElevatorChallenge.Utility
 {
-    public class Elevator
+    public class Elevator : IElevator
     {
         public int Id { get; private set; }
         public int CurrentFloor { get; private set; }

@@ -2,8 +2,10 @@
 
 using DvtElevatorChallenge.Bll;
 using DvtElevatorChallenge.Data;
+using DvtElevatorChallenge.Utility;
 
-var manager = new ElevatorManager(3);
+var allocationStrategy = new DefaultRequestAllocationStrategy();
+var manager = new ElevatorManager(3, allocationStrategy);
 
 // Simulate some requests
 manager.RequestElevator(5, Enums.Direction.Up);
@@ -14,7 +16,7 @@ manager.RequestElevator(1, Enums.Direction.Up);
 manager.PerformMaintenance(1);
 
 // Move the elevators a few times
-for (var i = 0; i < 10; i++)
+for (int i = 0; i < 10; i++)
 {
     Console.WriteLine($"--- Step {i + 1} ---");
     manager.MoveElevators();
