@@ -6,6 +6,7 @@ using DvtElevatorChallenge.Utility;
 try
 {
     var allocationStrategy = new DefaultRequestAllocationStrategy();
+    //Create an instance of the Elevator
     var manager = new ElevatorManager(3, allocationStrategy);
 
     // Simulate some passenger requests
@@ -24,7 +25,7 @@ try
         Console.WriteLine($"Error creating passengers: {ex.Message}");
     }
 
-    // Perform maintenance on elevator 1
+    // Perform maintenance on elevator 2
     manager.PerformMaintenance(1);
 
     // Move the elevators a few times

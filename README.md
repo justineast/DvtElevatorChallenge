@@ -39,3 +39,11 @@ Prerequisites:
 - You can run the exe that is generated after compiliation
 - You can debug this in an IDE like Visual Studio
 
+## Build and Deploy
+
+- An azure-pipelines.yaml file has been added to build the application using the DotNetCoreCLI@2 through ADO
+- This would simulate the following steps:
+	- Restore nuget packages added
+	- Build the solution
+	- Run any Unit Tests
+	- Publish the artifact to the $(Build.ArtifactStagingDirectory) location

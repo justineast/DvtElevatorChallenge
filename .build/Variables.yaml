@@ -1,0 +1,5 @@
+variables:
+  - name: buildConfiguration
+    value: 'Release'
+  - name: dotnetVersion
+    value: '8.0.3'

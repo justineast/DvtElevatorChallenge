@@ -113,7 +113,7 @@ namespace DvtElevatorChallenge.Utility
         //Write the output to the console
         public override string ToString()
         {
-            return $"Elevator {Id}: Floor {CurrentFloor}, Direction {Direction}, Maintenance: {IsInMaintenance}, Passengers: {_passengers.Count}";
+            return $"Elevator {Id}: Current Floor {CurrentFloor}, Direction {Direction}, Maintenance: {(IsInMaintenance ? "Yes" : "No")}, Passengers: {_passengers.Count}";
         }
     }
 }
