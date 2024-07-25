@@ -2,14 +2,18 @@
 
 namespace DvtElevatorChallenge.Utility
 {
-    //Class written to manage the passengers selection odf choice
     public class Passenger
     {
         public int Id { get; private set; }
         public int CurrentFloor { get; private set; }
         public int DestinationFloor { get; private set; }
 
-        //Constructor used to create an instance of the Passenger along with the requested floor they would like to go to
+        /// <summary>
+        /// Constructor used to create an instance of the Passenger along with the requested floor they would like to go to
+        /// </summary>
+        /// <param name="id">Passenger Id</param>
+        /// <param name="currentFloor">Current Floor the passenger is on</param>
+        /// <param name="destinationFloor">Floor the passenger would like to go to</param>
         public Passenger(int id, int currentFloor, int destinationFloor)
         {
             if (currentFloor < 0 || destinationFloor < 0)

@@ -12,7 +12,11 @@ namespace DvtElevatorChallenge.Utility
         private readonly List<Passenger> _passengers;
         public bool IsInMaintenance { get; private set; }
 
-        //Constructor used to set up the Elevator, currentFloor added as an optional for Unit testing purposes
+        /// /// <summary>
+        /// Constructor used to set up the Elevator, currentFloor added as an optional for Unit testing purposes
+        /// </summary>
+        /// <param name="id">Elevator Id</param>
+        /// <param name="currentFloor">An optional parameter to help with unit testing of an elevator at a specific floor</param>
         public Elevator(int id, int currentFloor = 0)
         {
             Id = id;
@@ -23,7 +27,10 @@ namespace DvtElevatorChallenge.Utility
             IsInMaintenance = false;
         }
 
-        //Method used to accept a floor request from a passenger
+        /// <summary>
+        /// Method used to accept a floor request from a passenger
+        /// </summary>
+        /// <param name="floor">Selected Floor</param>
         public void AddRequest(int floor)
         {
             if (!_requests.Contains(floor))
@@ -32,7 +39,10 @@ namespace DvtElevatorChallenge.Utility
             }
         }
 
-        //Method used to add a passenger to the elevator
+        /// <summary>
+        /// Method used to add a passenger to the elevator
+        /// </summary>
+        /// <param name="passenger">The passenger to add</param>
         public void AddPassenger(Passenger passenger)
         {
             if (_passengers.Contains(passenger))
@@ -41,22 +51,28 @@ namespace DvtElevatorChallenge.Utility
             _passengers.Add(passenger);
             AddRequest(passenger.DestinationFloor);
         }
-
-        //Method used to drop the passenger at the desired floor
+        
+        /// <summary>
+        /// Method used to drop the passenger at the desired floor
+        /// </summary>
         private void DropOffPassengers()
         {
             _passengers.RemoveAll(p => p.DestinationFloor == CurrentFloor);
         }
-
-        //Method used to perform maintenance on an elevator
-        //Set the Direction/Status of the elevator to stopped
+        
+        /// <summary>
+        /// Method used to perform maintenance on an elevator
+        /// Set the Direction/Status of the elevator to stopped
+        /// </summary>
         public void PerformMaintenance()
         {
             IsInMaintenance = true;
             Direction = Direction.Stopped;
         }
 
-        //Method used to complete maintenance on an elevator
+        /// <summary>
+        /// Method used to complete maintenance on an elevator
+        /// </summary>
         public void CompleteMaintenance()
         {
             IsInMaintenance = false;
@@ -65,11 +81,13 @@ namespace DvtElevatorChallenge.Utility
             _passengers.Clear();
         }
 
-        //Method used to manage the movement of the Elevator
-        //If there are no requests the Direction of the elevator is set to Idle.
-        //If there is a request for a floor above the current elevator floor it will move up.
-        //If there is a request for a floor below the current elevator floor it will move down.
-        //Passengers will be dropped off at their desired floor as well
+        /// <summary>
+        /// Method used to manage the movement of the Elevator.
+        /// If there are no requests the Direction of the elevator is set to Idle
+        /// If there is a request for a floor above the current elevator floor it will move up.
+        /// If there is a request for a floor below the current elevator floor it will move down.
+        /// Passengers will be dropped off at their desired floor as well
+        /// </summary>
         public void Move()
         {
             if (IsInMaintenance)
@@ -110,7 +128,10 @@ namespace DvtElevatorChallenge.Utility
             }
         }
 
-        //Write the output to the console
+        /// <summary>
+        /// Returns a string that represents the current elevator status.
+        /// </summary>
+        /// <returns>A string that represents the current elevator status.</returns>
         public override string ToString()
         {
             return $"Elevator {Id}: Current Floor {CurrentFloor}, Direction {Direction}, Maintenance: {(IsInMaintenance ? "Yes" : "No")}, Passengers: {_passengers.Count}";

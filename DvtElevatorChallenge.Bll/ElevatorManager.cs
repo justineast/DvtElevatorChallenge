@@ -10,6 +10,11 @@ namespace DvtElevatorChallenge.Bll
         private readonly Dictionary<int, List<Passenger>> _passengerRequests;
         private readonly IRequestAllocationStrategy _allocationStrategy;
 
+        /// <summary>
+        /// Constructor used to create an instance of the ElevatorManager
+        /// </summary>
+        /// <param name="numberOfElevators">The Number of elevators</param>
+        /// <param name="allocationStrategy">An instance of the AllocationStrategy class</param>
         public ElevatorManager(int numberOfElevators, IRequestAllocationStrategy allocationStrategy)
         {
             if (numberOfElevators <= 0)
@@ -21,13 +26,17 @@ namespace DvtElevatorChallenge.Bll
             _passengerRequests = new Dictionary<int, List<Passenger>>();
             _allocationStrategy = allocationStrategy;
 
+            //Based on the number of elevators passed in, the Elevator manager will create instances for each elevator 
             for (var i = 0; i < numberOfElevators; i++)
             {
                 _elevators.Add(new Elevator(i));
             }
         }
 
-        //Method used to add a request to call the closest elevator to pick up the customer
+        /// <summary>
+        /// Method used to add a request to call the closest elevator to pick up the customer
+        /// </summary>
+        /// <param name="passenger">The passenger</param>
         public void RequestElevator(Passenger passenger)
         {
             ArgumentNullException.ThrowIfNull(passenger);
@@ -41,9 +50,11 @@ namespace DvtElevatorChallenge.Bll
             value.Add(passenger);
             AllocateRequests();
         }
-
-        //Method used to allocate the best elevator to pick up the passenger
-        //Logic is applied to find the best elevator for the desired floor request
+        
+        /// <summary>
+        /// Method used to allocate the best elevator to pick up the passenger
+        /// Logic is applied to find the best elevator for the desired floor request
+        /// </summary>
         private void AllocateRequests()
         {
             foreach (var passengerRequest in _passengerRequests.ToList())
@@ -73,8 +84,10 @@ namespace DvtElevatorChallenge.Bll
                 }
             }
         }
-
-        //Method used to move the elevators
+        
+        /// <summary>
+        /// Method used to move the elevators and Allocate the requests to the elevator
+        /// </summary>
         public void MoveElevators()
         {
             foreach (var elevator in _elevators)
