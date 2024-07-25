@@ -5,9 +5,16 @@ namespace DvtElevatorChallenge.Utility
 {
     public class DefaultRequestAllocationStrategy : IRequestAllocationStrategy
     {
-        //Logic is applied to find the best elevator for the desired floor request
-        //If the elevator is currently being maintained it will not be requested to pick up the passenger
-        //Logic is applied to check the shortest distance to the next floor request
+        /// <summary>
+        /// Method used to find the best elevator to pick up the passenger
+        /// Logic is applied to find the best elevator for the desired floor request
+        /// If the elevator is currently being maintained it will not be requested to pick up the passenger
+        /// Logic is applied to check the shortest distance to the next floor request
+        /// </summary>
+        /// <param name="elevators">List of the elevators</param>
+        /// <param name="floor">Floor the elevator is required</param>
+        /// <param name="direction">Direction in which the elevator is moving</param>
+        /// <returns>The best elevator based on the logic</returns>
         public IElevator FindBestElevator(IEnumerable<IElevator> elevators, int floor, Enums.Direction direction)
         {
             IElevator bestElevator = null;
